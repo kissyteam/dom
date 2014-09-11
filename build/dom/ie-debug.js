@@ -15,6 +15,7 @@ dom/ie/attr
 */
 var domIeCreate, domIeInsertion, domIeStyle, domIeTraversal, domIeTransform, domIeInputSelection, domIeAttr, domIe;
 domIeCreate = function (exports) {
+  exports = {};
   /**
    * @ignore
    * ie create hack
@@ -96,6 +97,7 @@ domIeCreate = function (exports) {
   return exports;
 }();
 domIeInsertion = function (exports) {
+  exports = {};
   /**
    * @ignore
    * ie create hack
@@ -137,6 +139,7 @@ domIeInsertion = function (exports) {
   return exports;
 }();
 domIeStyle = function (exports) {
+  exports = {};
   /**
    * @ignore
    * style hack for ie
@@ -259,6 +262,7 @@ domIeStyle = function (exports) {
   return exports;
 }();
 domIeTraversal = function (exports) {
+  exports = {};
   /**
    * @ignore
    * traversal ie hack
@@ -323,6 +327,7 @@ domIeTraversal = function (exports) {
   return exports;
 }();
 domIeTransform = function (exports) {
+  exports = {};
   /**
    * @ignore
    * transform hack for ie
@@ -607,6 +612,7 @@ domIeTransform = function (exports) {
   return exports;
 }();
 domIeInputSelection = function (exports) {
+  exports = {};
   /**
    * @ignore
    * handle input selection and cursor position ie hack
@@ -719,6 +725,7 @@ domIeInputSelection = function (exports) {
   return exports;
 }();
 domIeAttr = function (exports) {
+  exports = {};
   /**
    * @ignore
    * attr ie hack
@@ -835,6 +842,7 @@ domIeAttr = function (exports) {
   return exports;
 }();
 domIe = function (exports) {
+  exports = {};
   domIeCreate;
   domIeInsertion;
   domIeStyle;

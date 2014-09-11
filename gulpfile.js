@@ -56,36 +56,6 @@ gulp.task('build-base', ['lint'], function () {
         .pipe(gulp.dest(path.resolve(build, 'dom')));
 });
 
-
-gulp.task('build-class', ['lint'], function () {
-    return gulp.src('./lib/dom/class.js')
-        .pipe(modulex({
-            modulex: {
-                packages: {
-                    'dom/class': {
-                        base: path.resolve(src, 'dom/class')
-                    }
-                }
-            },
-            excludeModules: ['dom/base']
-        }))
-        .pipe(kclean({
-            files: [
-                {
-                    src: './lib/dom/class-debug.js',
-                    outputModule: 'dom/class'
-                }
-            ]
-        }))
-        .pipe(replace(/@VERSION@/g, packageInfo.version))
-        .pipe(gulp.dest(path.resolve(build, 'dom')))
-        .pipe(filter('class-debug.js'))
-        .pipe(replace(/@DEBUG@/g, ''))
-        .pipe(uglify())
-        .pipe(rename('class.js'))
-        .pipe(gulp.dest(path.resolve(build, 'dom')));
-});
-
 gulp.task('build-ie', ['lint'], function () {
     return gulp.src('./lib/dom/ie.js')
         .pipe(modulex({
@@ -115,6 +85,6 @@ gulp.task('build-ie', ['lint'], function () {
         .pipe(gulp.dest(path.resolve(build, 'dom')));
 });
 
-gulp.task('build', ['build-base', 'build-ie', 'build-class']);
+gulp.task('build', ['build-base', 'build-ie']);
 
 gulp.task('default', ['build']);

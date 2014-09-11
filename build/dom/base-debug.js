@@ -9,6 +9,7 @@ dom/base
 dom/base/api
 dom/base/attr
 dom/base/class
+dom/base/class-list
 dom/base/create
 dom/base/data
 dom/base/insertion
@@ -17,8 +18,9 @@ dom/base/style
 dom/base/selector
 dom/base/traversal
 */
-var domBaseApi, domBaseAttr, domBaseClass, domBaseCreate, domBaseData, domBaseInsertion, domBaseOffset, domBaseStyle, domBaseSelector, domBaseTraversal, domBase;
+var domBaseApi, domBaseAttr, domBaseClassList, domBaseCreate, domBaseData, domBaseInsertion, domBaseOffset, domBaseStyle, domBaseSelector, domBaseTraversal, domBaseClass, domBase;
 domBaseApi = function (exports) {
+  exports = {};
   /**
    * @ignore
    * dom
@@ -147,6 +149,7 @@ domBaseApi = function (exports) {
   return exports;
 }();
 domBaseAttr = function (exports) {
+  exports = {};
   var util = modulexUtil;
   var Dom = domBaseApi;
   var doc = document;
@@ -506,93 +509,95 @@ domBaseAttr = function (exports) {
   });
   return exports;
 }();
-domBaseClass = function (exports) {
-  var Dom = domBaseApi;
-  var util = modulexUtil;
-  var slice = [].slice;
-  var NodeType = Dom.NodeType;
-  var RE_SPLIT = /[\.\s]\s*\.?/;
-  function strToArray(str) {
-    str = util.trim(str || '');
-    var arr = str.split(RE_SPLIT);
-    var newArr = [];
-    var v;
-    var l = arr.length;
-    var i = 0;
-    for (; i < l; i++) {
-      if (v = arr[i]) {
-        newArr.push(v);
-      }
-    }
-    return newArr;
-  }
-  function batchClassList(method) {
-    return function (elem, classNames) {
-      var i, l, className;
-      var classList = elem.classList;
-      var extraArgs = slice.call(arguments, 2);
-      for (i = 0, l = classNames.length; i < l; i++) {
-        if (className = classNames[i]) {
-          classList[method].apply(classList, [className].concat(extraArgs));
-        }
-      }
+domBaseClassList = function (exports) {
+  exports = {};
+  var Feature = modulexFeature;
+  if (!Feature.isClassListSupported()) {
+    var util = modulexUtil;
+    var SPACE = ' ';
+    var RE_CLASS = /[\n\t\r]/g;
+    var norm = function (elemClass) {
+      return (SPACE + elemClass + SPACE).replace(RE_CLASS, SPACE);
     };
-  }
-  function batchEls(method) {
-    return function (selector, className) {
-      var classNames = strToArray(className);
-      var extraArgs = slice.call(arguments, 2);
-      Dom.query(selector).each(function (elem) {
-        if (elem.nodeType === NodeType.ELEMENT_NODE) {
-          Dom[method].apply(Dom, [
-            elem,
-            classNames
-          ].concat(extraArgs));
+    exports = {
+      _hasClass: function (elem, classNames) {
+        var elemClass = elem.className;
+        var className, cl, j;
+        if (elemClass) {
+          className = norm(elemClass);
+          for (j = 0, cl = classNames.length; j < cl; j++) {
+            if (className.indexOf(SPACE + classNames[j] + SPACE) < 0) {
+              return false;
+            }
+          }
+          return true;
         }
-      });
-    };
-  }
-  util.mix(Dom, {
-    _hasClass: function (elem, classNames) {
-      var i, l, className;
-      var classList = elem.classList;
-      if (classList.length) {
-        for (i = 0, l = classNames.length; i < l; i++) {
-          className = classNames[i];
-          if (className && !classList.contains(className)) {
-            return false;
+        return false;
+      },
+      _addClass: function (elem, classNames) {
+        var elemClass = elem.className;
+        var normClassName, setClass, j;
+        var cl = classNames.length;
+        if (elemClass) {
+          normClassName = norm(elemClass);
+          setClass = elemClass;
+          j = 0;
+          for (; j < cl; j++) {
+            if (normClassName.indexOf(SPACE + classNames[j] + SPACE) < 0) {
+              setClass += SPACE + classNames[j];
+            }
+          }
+          setClass = util.trim(setClass);
+        } else {
+          setClass = classNames.join(' ');
+        }
+        elem.className = setClass;
+      },
+      _removeClass: function (elem, classNames) {
+        var elemClass = elem.className;
+        var className, j, needle;
+        var cl = classNames.length;
+        if (elemClass && cl) {
+          className = norm(elemClass);
+          j = 0;
+          for (; j < cl; j++) {
+            needle = SPACE + classNames[j] + SPACE;
+            while (className.indexOf(needle) >= 0) {
+              className = className.replace(needle, SPACE);
+            }
+          }
+          elem.className = util.trim(className);
+        }
+      },
+      _toggleClass: function (elem, classNames, force) {
+        var j, className, result, method;
+        var self = this;
+        var removed = [];
+        var added = [];
+        var cl = classNames.length;
+        for (j = 0; j < cl; j++) {
+          className = classNames[j];
+          result = self._hasClass(elem, [className]);
+          method = result ? force !== true && 'remove' : force !== false && 'add';
+          if (method === 'remove') {
+            removed.push(className);
+          } else if (method === 'add') {
+            added.push(className);
           }
         }
-        return true;
-      }
-      return false;
-    },
-    _addClass: batchClassList('add'),
-    _removeClass: batchClassList('remove'),
-    _toggleClass: batchClassList('toggle'),
-    hasClass: function (selector, className) {
-      var ret = false;
-      className = strToArray(className);
-      Dom.query(selector).each(function (elem) {
-        if (elem.nodeType === NodeType.ELEMENT_NODE && Dom._hasClass(elem, className)) {
-          ret = true;
-          return false;
+        if (added.length) {
+          self._addClass(elem, added);
         }
-        return undefined;
-      });
-      return ret;
-    },
-    replaceClass: function (selector, oldClassName, newClassName) {
-      Dom.removeClass(selector, oldClassName);
-      Dom.addClass(selector, newClassName);
-    },
-    addClass: batchEls('_addClass'),
-    removeClass: batchEls('_removeClass'),
-    toggleClass: batchEls('_toggleClass')
-  });
+        if (removed.length) {
+          self._removeClass(elem, removed);
+        }
+      }
+    };
+  }
   return exports;
 }();
 domBaseCreate = function (exports) {
+  exports = {};
   var util = modulexUtil;
   var undef;
   var Dom = domBaseApi;
@@ -911,6 +916,7 @@ domBaseCreate = function (exports) {
   return exports;
 }();
 domBaseData = function (exports) {
+  exports = {};
   var util = modulexUtil;
   var Dom = domBaseApi;
   var win = window, EXPANDO = '_ks_data_' + util.now(), dataCache = {}, winDataCache = {}, noData = {
@@ -1112,6 +1118,7 @@ domBaseData = function (exports) {
   return exports;
 }();
 domBaseInsertion = function (exports) {
+  exports = {};
   var util = modulexUtil;
   var Dom = domBaseApi;
   var PARENT_NODE = 'parentNode', NodeType = Dom.NodeType, RE_FORM_EL = /^(?:button|input|object|select|textarea)$/i, getNodeName = Dom.nodeName, makeArray = util.makeArray, splice = [].splice, NEXT_SIBLING = 'nextSibling', R_SCRIPT_TYPE = /\/(java|ecma)script/i;
@@ -1274,6 +1281,7 @@ domBaseInsertion = function (exports) {
   return exports;
 }();
 domBaseOffset = function (exports) {
+  exports = {};
   var util = modulexUtil;
   var Dom = domBaseApi;
   var win = window, UA = modulexUa, doc = win.document, NodeType = Dom.NodeType, docElem = doc && doc.documentElement, getWindow = Dom.getWindow, CSS1Compat = 'CSS1Compat', compatMode = 'compatMode', MAX = Math.max, POSITION = 'position', RELATIVE = 'relative', DOCUMENT = 'document', BODY = 'body', DOC_ELEMENT = 'documentElement', VIEWPORT = 'viewport', SCROLL = 'scroll', CLIENT = 'client', LEFT = 'left', TOP = 'top', SCROLL_LEFT = SCROLL + 'Left', SCROLL_TOP = SCROLL + 'Top';
@@ -1513,6 +1521,7 @@ domBaseOffset = function (exports) {
   return exports;
 }();
 domBaseStyle = function (exports) {
+  exports = {};
   var util = modulexUtil;
   var Dom = domBaseApi;
   var globalWindow = window, getCssVendorInfo = modulexFeature.getCssVendorInfo, UA = modulexUa, BOX_MODELS = [
@@ -1959,6 +1968,7 @@ domBaseStyle = function (exports) {
   return exports;
 }();
 domBaseSelector = function (exports) {
+  exports = {};
   var Dom = domBaseApi;
   var util = modulexUtil;
   var querySelectorAll = domSelector;
@@ -2221,6 +2231,7 @@ domBaseSelector = function (exports) {
   return exports;
 }();
 domBaseTraversal = function (exports) {
+  exports = {};
   var util = modulexUtil;
   var Dom = domBaseApi;
   var NodeType = Dom.NodeType, CONTAIN_MASK = 16;
@@ -2384,7 +2395,96 @@ domBaseTraversal = function (exports) {
   }
   return exports;
 }();
+domBaseClass = function (exports) {
+  exports = {};
+  var Dom = domBaseApi;
+  var util = modulexUtil;
+  var slice = [].slice;
+  var NodeType = Dom.NodeType;
+  var RE_SPLIT = /[\.\s]\s*\.?/;
+  function strToArray(str) {
+    str = util.trim(str || '');
+    var arr = str.split(RE_SPLIT);
+    var newArr = [];
+    var v;
+    var l = arr.length;
+    var i = 0;
+    for (; i < l; i++) {
+      if (v = arr[i]) {
+        newArr.push(v);
+      }
+    }
+    return newArr;
+  }
+  function batchClassList(method) {
+    return function (elem, classNames) {
+      var i, l, className;
+      var classList = elem.classList;
+      var extraArgs = slice.call(arguments, 2);
+      for (i = 0, l = classNames.length; i < l; i++) {
+        if (className = classNames[i]) {
+          classList[method].apply(classList, [className].concat(extraArgs));
+        }
+      }
+    };
+  }
+  function batchEls(method) {
+    return function (selector, className) {
+      var classNames = strToArray(className);
+      var extraArgs = slice.call(arguments, 2);
+      Dom.query(selector).each(function (elem) {
+        if (elem.nodeType === NodeType.ELEMENT_NODE) {
+          Dom[method].apply(Dom, [
+            elem,
+            classNames
+          ].concat(extraArgs));
+        }
+      });
+    };
+  }
+  util.mix(Dom, {
+    _hasClass: function (elem, classNames) {
+      var i, l, className;
+      var classList = elem.classList;
+      if (classList.length) {
+        for (i = 0, l = classNames.length; i < l; i++) {
+          className = classNames[i];
+          if (className && !classList.contains(className)) {
+            return false;
+          }
+        }
+        return true;
+      }
+      return false;
+    },
+    _addClass: batchClassList('add'),
+    _removeClass: batchClassList('remove'),
+    _toggleClass: batchClassList('toggle'),
+    hasClass: function (selector, className) {
+      var ret = false;
+      className = strToArray(className);
+      Dom.query(selector).each(function (elem) {
+        if (elem.nodeType === NodeType.ELEMENT_NODE && Dom._hasClass(elem, className)) {
+          ret = true;
+          return false;
+        }
+        return undefined;
+      });
+      return ret;
+    },
+    replaceClass: function (selector, oldClassName, newClassName) {
+      Dom.removeClass(selector, oldClassName);
+      Dom.addClass(selector, newClassName);
+    },
+    addClass: batchEls('_addClass'),
+    removeClass: batchEls('_removeClass'),
+    toggleClass: batchEls('_toggleClass')
+  });
+  util.mix(Dom, domBaseClassList);
+  return exports;
+}();
 domBase = function (exports) {
+  exports = {};
   var Dom = domBaseApi;
   domBaseAttr;
   domBaseClass;
