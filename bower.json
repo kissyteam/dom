@@ -1,0 +1,28 @@
+{
+  "name": "modulex-dom",
+  "author": "yiminghe <yiminghe@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/kissyteam/dom.git"
+  },
+  "dependencies": {
+    "modulex": "modulex#master",
+    "query-selector": "*",
+    "ua": "modulex-ua#master",
+    "util": "modulex-util#master",
+    "feature": "modulex-feature#master"
+  },
+  "ignore": [
+    "**/*",
+    "!build/**/*",
+    "!lib/**/*",
+    "!meta/**/*",
+    "!index.js"
+  ],
+  "devDependencies": {
+    "jquery": "1.x",
+    "url": "modulex-url#master",
+    "simulate-dom-event": "*"
+  }
+}

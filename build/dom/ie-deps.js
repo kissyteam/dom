@@ -1,0 +1,1 @@
+modulex.config("requires",{"dom/ie":["modulex-util","dom/base","modulex-ua"]});

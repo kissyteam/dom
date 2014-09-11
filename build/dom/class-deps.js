@@ -1,0 +1,1 @@
+modulex.config("requires",{"dom/class":["modulex-util","dom/base"]});
