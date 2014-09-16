@@ -32,7 +32,13 @@
 <script src="/bower_components/simulate-dom-event/index.js"></script>
 <script src="/bower_components/querystring/build/querystring-debug.js"></script>
 <script src="/bower_components/querystring/meta/alias.js"></script>
-
+<script>
+    var UA, Feature;
+    modulex.use(['ua', 'feature'], function (UAx, Featurex) {
+        UA = UAx;
+        Feature = Featurex;
+    });
+</script>
 <script src="/meta/alias.js"></script>
 <script src="/node_modules/node-jscover/lib/front-end/header.js"></script>
 <script src="/node_modules/node-jscover/lib/front-end/jscoverage-branch.js"></script>
