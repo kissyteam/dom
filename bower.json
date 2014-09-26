@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "modulex": "modulex#master",
-    "query-selector": "modulex-query-selector#master",
+    "query-selector": "query-selector#master",
     "ua": "modulex-ua#master",
     "util": "modulex-util#master",
     "feature": "modulex-feature#master"
