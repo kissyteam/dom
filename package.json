@@ -1,6 +1,6 @@
 {
   "name": "modulex-dom",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "yiminghe <yiminghe@gmail.com>",
   "engines": {
     "node": "~0.11"
@@ -51,6 +51,7 @@
     "node-jscover": "^0.6.8",
     "node-jscover-coveralls": "^1.0.10",
     "node-jscover-handler": "^1.0.3",
+    "gulp-wrapper": "^0.1.5",
     "precommit-hook": "^1.0.7"
   },
   "precommit": [
@@ -58,14 +59,10 @@
   ],
   "scripts": {
     "start": "node --harmony server",
+    "publish": "gulp tag",
     "lint": "gulp lint",
     "browser-test": "mocha-phantomjs http://localhost:8012/tests/runner.html",
     "browser-test-build": "mocha-phantomjs http://localhost:8012/tests/runner.html?build",
     "browser-test-cover": "mocha-phantomjs -R node_modules/node-jscover/lib/reporters/mocha/console http://localhost:8012/tests/runner.html?coverage"
-  },
-  "dependencies": {
-    "modulex-feature": "^1.0.1",
-    "modulex-ua": "^1.0.1",
-    "modulex-util": "^1.1.0"
   }
 }

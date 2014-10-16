@@ -1,3 +1,8 @@
+/*
+Copyright 2014, modulex-dom@1.0.2
+MIT Licensed
+build time: Thu, 16 Oct 2014 04:16:49 GMT
+*/
 modulex.add("dom/base", ["modulex-util","modulex-ua","modulex-feature","dom/selector"], function(require, exports, module) {
 var modulexUtil = require("modulex-util");
 var modulexUa = require("modulex-ua");
@@ -92,7 +97,7 @@ domBaseApi = function (exports) {
    * @singleton
    */
   var Dom = exports = {
-    version: '1.0.0',
+    version: '1.0.2',
     isCustomDomain: function (win) {
       win = win || WINDOW;
       win = Dom.get(win);
@@ -2496,6 +2501,7 @@ domBase = function (exports) {
   domBaseSelector;
   domBaseTraversal;
   exports = Dom;
+  module.exports.version = '1.0.2';
   return exports;
 }();
 module.exports = domBase;

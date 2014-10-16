@@ -7,11 +7,11 @@
     "url": "http://github.com/kissyteam/dom.git"
   },
   "dependencies": {
-    "modulex": "modulex#master",
-    "query-selector": "query-selector#master",
-    "ua": "modulex-ua#master",
-    "util": "modulex-util#master",
-    "feature": "modulex-feature#master"
+    "modulex": "*",
+    "query-selector": "query-selector#1.x",
+    "ua": "modulex-ua#1.x",
+    "util": "modulex-util#1.x",
+    "feature": "modulex-feature#1.x"
   },
   "ignore": [
     "**/*",
@@ -22,7 +22,7 @@
   ],
   "devDependencies": {
     "jquery": "1.x",
-    "url": "modulex-url#master",
+    "url": "modulex-url#1.x",
     "simulate-dom-event": "*"
   }
 }
