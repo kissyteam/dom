@@ -15,11 +15,11 @@ var jscs = require('gulp-jscs');
 var replace = require('gulp-replace');
 var wrapper = require('gulp-wrapper');
 var date = new Date();
-var header = ['/*',
+var header = ['//!',
         'Copyright ' + date.getFullYear() + ', ' + packageInfo.name + '@' + packageInfo.version,
-        packageInfo.license + ' Licensed',
+        packageInfo.license + ' Licensed,',
         'build time: ' + (date.toGMTString()),
-    '*/', ''].join('\n');
+    '\n'].join(' ');
     
 gulp.task('lint', function () {
     return gulp.src('./lib/**/*.js')
@@ -61,7 +61,9 @@ gulp.task('build-base', ['lint'], function () {
         .pipe(gulp.dest(path.resolve(build, 'dom')))
         .pipe(filter('base-debug.js'))
         .pipe(replace(/@DEBUG@/g, ''))
-        .pipe(uglify())
+		.pipe(uglify({
+			preserveComments: 'some'
+		 }))
         .pipe(rename('base.js'))
         .pipe(gulp.dest(path.resolve(build, 'dom')));
 });
@@ -93,10 +95,15 @@ gulp.task('build-ie', ['lint'], function () {
             ]
         }))
         .pipe(replace(/@VERSION@/g, packageInfo.version))
+		.pipe(wrapper({
+			header: header
+		 }))
         .pipe(gulp.dest(path.resolve(build, 'dom')))
         .pipe(filter('ie-debug.js'))
         .pipe(replace(/@DEBUG@/g, ''))
-        .pipe(uglify())
+		.pipe(uglify({
+			preserveComments: 'some'
+		 }))
         .pipe(rename('ie.js'))
         .pipe(gulp.dest(path.resolve(build, 'dom')));
 });
