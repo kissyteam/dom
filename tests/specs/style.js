@@ -14,6 +14,8 @@ describe('style', function () {
         var elem = Dom.create('<div id="test-div" ' +
             'style="padding-left: 2px; ' +
             'background: transparent; ' +
+            'width: 30px; ' +
+            'height: 30px; ' +
             '' +
             'float: left; ' +
             'border: 5px solid rgb(0,0,0);">x</div>');
@@ -49,7 +51,7 @@ describe('style', function () {
         // 不加入 dom 节点，ie9,firefox 返回 auto by computedStyle
         // ie7,8 返回负数，offsetHeight 返回0
         //alert(elem.currentStyle.height);== auto
-        expect(parseInt(Dom.css(elem, 'height'), 10) - 19).to.be.within(-2, 2);
+        expect(parseInt(Dom.css(elem, 'height'), 10) - 30).to.be.within(-1, 1);
 
         Dom.css(elem, 'float', 'right');
 
@@ -106,14 +108,16 @@ describe('style', function () {
         var elem = Dom.create('<div id="test-div" ' +
             'style="padding-left: 2pt; ' +
             'background: transparent; ' +
+            'width: 30px; ' +
+            'height: 30px; ' +
             '' +
             'float: left; ' +
             'border: 5px solid rgb(0,0,0);">x</div>');
 
         document.body.appendChild(elem);
 
-        expect(Math.round(Dom.width(elem))-7).to.be.within(-2, 2);
-        expect(Math.round(Dom.height(elem))-19).to.be.within(-2, 2);
+        expect(Math.round(Dom.width(elem))-30).to.be.within(-1, 1);
+        expect(Math.round(Dom.height(elem))-30).to.be.within(-1, 1);
 
         Dom.remove(elem);
     });
