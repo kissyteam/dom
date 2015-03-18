@@ -1,4 +1,4 @@
-//! Copyright 2015, kissy-dom@1.0.2 MIT Licensed, build time: Thu, 05 Feb 2015 06:02:35 GMT 
+//! Copyright 2015, kissy-dom@1.0.2 MIT Licensed, build time: Tue, 17 Mar 2015 05:34:35 GMT 
 modulex.add("dom/ie", ["modulex-util","dom/base","modulex-ua"], function(require, exports, module) {
 var modulexUtil = require("modulex-util");
 var domBase = require("dom/base");

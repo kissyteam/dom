@@ -1,4 +1,4 @@
-//! Copyright 2015, kissy-dom@1.0.2 MIT Licensed, build time: Thu, 05 Feb 2015 06:02:35 GMT 
+//! Copyright 2015, kissy-dom@1.0.2 MIT Licensed, build time: Tue, 17 Mar 2015 05:34:35 GMT 
 modulex.add("dom/base", ["modulex-util","modulex-ua","modulex-feature","dom/selector"], function(require, exports, module) {
 var modulexUtil = require("modulex-util");
 var modulexUa = require("modulex-ua");
@@ -1757,7 +1757,7 @@ domBaseStyle = function (exports) {
               'border'
             ], which, computedStyle);
           }
-          return Dom.css(elem, name, val);
+          return Dom.css(selector, name, val);
         }
         return undefined;
       }
